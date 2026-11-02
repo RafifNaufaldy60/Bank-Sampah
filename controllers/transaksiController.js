@@ -26,6 +26,28 @@ exports.getTransaksi = async (req, res) => {
     }
 };
 
+exports.getTransaksiById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const transaksi = await pool.query(
+            `SELECT t.id, u.nama, j.nama_sampah, t.berat_kg, t.total_harga, t.foto_bukti, t.tanggal 
+             FROM transaksi t 
+             JOIN users u ON t.user_id = u.id 
+             JOIN jenis_sampah j ON t.jenis_sampah_id = j.id 
+             WHERE t.id = $1`,
+            [id]
+        );
+
+        if (transaksi.rows.length === 0) {
+            return res.status(404).json({ error: 'Transaksi tidak ditemukan' });
+        }
+
+        res.status(200).json({ data: transaksi.rows[0] });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.createTransaksi = async (req, res) => {
     const { user_id, jenis_sampah_id, berat_kg, foto_bukti } = req.body;
     try {
