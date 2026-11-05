@@ -121,3 +121,26 @@ exports.uploadFoto = (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+// Route ke-6: Dapatkan data transaksi berdasarkan nama jenis sampah
+exports.getTransaksiByNamaSampah = async (req, res) => {
+    const { nama_sampah } = req.params;
+    try {
+        const transaksi = await pool.query(
+            `SELECT t.id, u.nama, j.nama_sampah, t.berat_kg, t.total_harga, t.foto_bukti, t.tanggal 
+             FROM transaksi t 
+             JOIN users u ON t.user_id = u.id 
+             JOIN jenis_sampah j ON t.jenis_sampah_id = j.id 
+             WHERE j.nama_sampah ILIKE $1`,
+            [`%${nama_sampah}%`]
+        );
+
+        if (transaksi.rows.length === 0) {
+            return res.status(404).json({ error: 'Transaksi dengan nama sampah tersebut tidak ditemukan' });
+        }
+
+        res.status(200).json({ data: transaksi.rows });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

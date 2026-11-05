@@ -13,6 +13,7 @@ router.post('/login', authController.login);
 
 router.get('/transaksi', verifyToken, transaksiController.getTransaksi);
 router.get('/transaksi/:id', verifyToken, transaksiController.getTransaksiById);
+router.get('/transaksi/jenis/:nama_sampah', verifyToken, transaksiController.getTransaksiByNamaSampah);
 router.post('/transaksi', verifyToken, transaksiController.createTransaksi);
 router.put('/transaksi/:id', verifyToken, transaksiController.updateTransaksi);
 router.delete('/transaksi/:id', verifyToken, transaksiController.deleteTransaksi);
